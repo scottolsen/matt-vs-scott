@@ -1,8 +1,5 @@
 {
   "name": "matt-vs-scott",
   "compatibility_date": "2026-01-06",
-  "pages_build_output_dir": ".",
-  "assets": {
-    "directory": "."
-  }
+  "pages_build_output_dir": "."
 }

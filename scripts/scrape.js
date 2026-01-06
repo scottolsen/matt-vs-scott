@@ -225,15 +225,16 @@ async function main() {
 
   await browser.close();
 
-  // Update timestamp and save
+  // Always update timestamp and save
+  data.lastUpdated = new Date().toISOString();
+  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+
   if (hasUpdates) {
-    data.lastUpdated = new Date().toISOString();
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
     console.log('\nData updated successfully!');
-    console.log(JSON.stringify(data, null, 2));
   } else {
-    console.log('\nNo updates detected, keeping existing data.');
+    console.log('\nNo data changes, but timestamp updated.');
   }
+  console.log(JSON.stringify(data, null, 2));
 }
 
 main().catch(error => {

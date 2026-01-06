@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matt vs Scott - January 2025 Challenge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --strava-orange: #FC4C02;
+            --strava-orange-dark: #e04400;
+            --dark-bg: #0d0d0d;
+            --card-bg: #1a1a1a;
+            --card-border: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --winner-green: #22c55e;
+            --winner-glow: rgba(34, 197, 94, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 .vs {
+            color: var(--strava-orange);
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .subtitle span {
+            color: var(--strava-orange);
+            font-weight: 600;
+        }
+
+        /* Competition Grid */
+        .competition {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 640px) {
+            .competition {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Competitor Cards */
+        .competitor {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            position: relative;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .competitor:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .competitor-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .competitor-name::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: var(--strava-orange);
+            border-radius: 2px;
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .stat {
+            position: relative;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .stat-value.winner {
+            color: var(--winner-green);
+        }
+
+        .trophy {
+            font-size: 1.5rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Strava Link */
+        .strava-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--strava-orange);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: background 0.2s ease;
+        }
+
+        .strava-link:hover {
+            background: var(--strava-orange-dark);
+        }
+
+        .strava-link svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--card-border);
+        }
+
+        .last-updated {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .last-updated time {
+            color: var(--text-primary);
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .divider-text {
+            background: var(--dark-bg);
+            padding: 0 1rem;
+            color: var(--strava-orange);
+            font-weight: 900;
+            font-size: 1.5rem;
+        }
+
+        /* Score Summary */
+        .score-summary {
+            background: linear-gradient(135deg, var(--card-bg) 0%, #252525 100%);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .score-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .score-value.matt {
+            color: var(--strava-orange);
+        }
+
+        .score-value.scott {
+            color: #60a5fa;
+        }
+
+        .score-value.tie {
+            color: var(--winner-green);
+        }
+
+        /* Loading state */
+        .loading {
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="var(--strava-orange)">
+                    <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/>
+                </svg>
+            </div>
+            <h1>MATT <span class="vs">vs</span> SCOTT</h1>
+            <p class="subtitle">January 2025 <span>Fitness Challenge</span></p>
+        </header>
+
+        <div class="score-summary">
+            <div class="score-item">
+                <div class="score-label">Distance Leader</div>
+                <div class="score-value" id="distance-leader">Loading...</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Time Leader</div>
+                <div class="score-value" id="time-leader">Loading...</div>
+            </div>
+        </div>
+
+        <div class="competition">
+            <div class="competitor" id="matt-card">
+                <h2 class="competitor-name">Matt Phippen</h2>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-label">Distance</div>
+                        <div class="stat-value" id="matt-distance">--</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Moving Time</div>
+                        <div class="stat-value" id="matt-time">--</div>
+                    </div>
+                </div>
+                <a href="https://www.strava.com/athletes/2844018" target="_blank" rel="noopener" class="strava-link">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/>
+                    </svg>
+                    View on Strava
+                </a>
+            </div>
+
+            <div class="competitor" id="scott-card">
+                <h2 class="competitor-name">Scott Olsen</h2>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-label">Distance</div>
+                        <div class="stat-value" id="scott-distance">--</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Moving Time</div>
+                        <div class="stat-value" id="scott-time">--</div>
+                    </div>
+                </div>
+                <a href="https://www.strava.com/athletes/736553" target="_blank" rel="noopener" class="strava-link">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/>
+                    </svg>
+                    View on Strava
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            <p class="last-updated">
+                Last updated: <time id="last-updated">--</time>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Parse distance string to number (e.g., "218.1 mi" -> 218.1)
+        function parseDistance(str) {
+            const match = str.match(/[\d.]+/);
+            return match ? parseFloat(match[0]) : 0;
+        }
+
+        // Parse time string to seconds (e.g., "11:14:31" -> 40471)
+        function parseTime(str) {
+            const parts = str.split(':').map(Number);
+            if (parts.length === 3) {
+                return parts[0] * 3600 + parts[1] * 60 + parts[2];
+            } else if (parts.length === 2) {
+                return parts[0] * 60 + parts[1];
+            }
+            return 0;
+        }
+
+        // Format date for display
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+
+        // Load and display data
+        async function loadData() {
+            try {
+                const response = await fetch('data.json');
+                const data = await response.json();
+
+                const matt = data.contestants.matt;
+                const scott = data.contestants.scott;
+
+                // Update stats
+                document.getElementById('matt-distance').textContent = matt.distance;
+                document.getElementById('matt-time').textContent = matt.movingTime;
+                document.getElementById('scott-distance').textContent = scott.distance;
+                document.getElementById('scott-time').textContent = scott.movingTime;
+
+                // Determine winners
+                const mattDist = parseDistance(matt.distance);
+                const scottDist = parseDistance(scott.distance);
+                const mattTime = parseTime(matt.movingTime);
+                const scottTime = parseTime(scott.movingTime);
+
+                // Distance winner
+                const distanceLeaderEl = document.getElementById('distance-leader');
+                const mattDistEl = document.getElementById('matt-distance');
+                const scottDistEl = document.getElementById('scott-distance');
+
+                if (mattDist > scottDist) {
+                    distanceLeaderEl.textContent = 'Matt';
+                    distanceLeaderEl.className = 'score-value matt';
+                    mattDistEl.innerHTML = matt.distance + ' <span class="trophy">🏆</span>';
+                    mattDistEl.classList.add('winner');
+                } else if (scottDist > mattDist) {
+                    distanceLeaderEl.textContent = 'Scott';
+                    distanceLeaderEl.className = 'score-value scott';
+                    scottDistEl.innerHTML = scott.distance + ' <span class="trophy">🏆</span>';
+                    scottDistEl.classList.add('winner');
+                } else {
+                    distanceLeaderEl.textContent = 'Tied!';
+                    distanceLeaderEl.className = 'score-value tie';
+                }
+
+                // Time winner
+                const timeLeaderEl = document.getElementById('time-leader');
+                const mattTimeEl = document.getElementById('matt-time');
+                const scottTimeEl = document.getElementById('scott-time');
+
+                if (mattTime > scottTime) {
+                    timeLeaderEl.textContent = 'Matt';
+                    timeLeaderEl.className = 'score-value matt';
+                    mattTimeEl.innerHTML = matt.movingTime + ' <span class="trophy">🏆</span>';
+                    mattTimeEl.classList.add('winner');
+                } else if (scottTime > mattTime) {
+                    timeLeaderEl.textContent = 'Scott';
+                    timeLeaderEl.className = 'score-value scott';
+                    scottTimeEl.innerHTML = scott.movingTime + ' <span class="trophy">🏆</span>';
+                    scottTimeEl.classList.add('winner');
+                } else {
+                    timeLeaderEl.textContent = 'Tied!';
+                    timeLeaderEl.className = 'score-value tie';
+                }
+
+                // Update timestamp
+                document.getElementById('last-updated').textContent = formatDate(data.lastUpdated);
+
+            } catch (error) {
+                console.error('Failed to load data:', error);
+                document.getElementById('distance-leader').textContent = 'Error';
+                document.getElementById('time-leader').textContent = 'Error';
+            }
+        }
+
+        // Load data on page load
+        loadData();
+    </script>
+</body>
+</html>

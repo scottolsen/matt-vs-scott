@@ -1,0 +1,12 @@
+{
+  "name": "matt-vs-scott",
+  "version": "1.0.0",
+  "description": "January 2025 fitness challenge tracker - Matt vs Scott",
+  "private": true,
+  "scripts": {
+    "scrape": "node scripts/scrape.js"
+  },
+  "dependencies": {
+    "playwright": "^1.49.0"
+  }
+}

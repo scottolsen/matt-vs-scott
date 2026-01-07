@@ -1,12 +1,10 @@
 name: Update Strava Stats
 
 on:
-  # Run hourly between 4am and 10pm Central Time
-  # Central Standard Time (CST) is UTC-6
-  # 4am CST = 10:00 UTC, 10pm CST = 04:00 UTC
   schedule:
-    - cron: '0 10-23 * * *'  # 4am-5pm Central (10am-11pm UTC)
-    - cron: '0 0-4 * * *'    # 6pm-10pm Central (12am-4am UTC)
+    # Run hourly between 4am and 10pm Central Time (UTC-6)
+    - cron: '0 10-23 * * *'
+    - cron: '0 0-4 * * *'
 
   # Allow manual trigger
   workflow_dispatch:

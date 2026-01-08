@@ -17,7 +17,9 @@
       "Bash(npm run scrape:*)",
       "Bash(curl:*)",
       "Bash(git pull:*)",
-      "Bash(git rebase:*)"
+      "Bash(git rebase:*)",
+      "Bash(gh workflow run:*)",
+      "Bash(gh run list:*)"
     ]
   }
 }

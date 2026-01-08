@@ -64,10 +64,19 @@
             font-weight: 900;
             letter-spacing: -0.02em;
             margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         h1 .vs {
             color: var(--strava-orange);
+        }
+
+        .header-logo {
+            height: clamp(2.5rem, 8vw, 4rem);
+            width: auto;
         }
 
         .subtitle {
@@ -300,7 +309,7 @@
                     <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/>
                 </svg>
             </div>
-            <h1>MATT <span class="vs">vs</span> SCOTT</h1>
+            <h1><img src="images/favicon.png" alt="" class="header-logo">MATT <span class="vs">vs</span> SCOTT<img src="images/favicon.png" alt="" class="header-logo"></h1>
             <p class="subtitle">January 2025 <span>Fitness Challenge</span></p>
         </header>
 

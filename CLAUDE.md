@@ -9,6 +9,7 @@ A January 2025 fitness challenge tracker comparing Matt Phippen vs Scott Olsen's
 ## Commands
 
 - `npm run scrape` - Run the Playwright scraper to fetch current stats from Strava (requires `npm ci` and `npx playwright install chromium` first)
+- `npm run trigger` - Trigger the GitHub Action to update stats (requires `gh` CLI)
 
 ## Architecture
 

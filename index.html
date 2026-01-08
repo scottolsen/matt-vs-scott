@@ -157,6 +157,10 @@
             color: var(--winner-green);
         }
 
+        .stat-value-small {
+            font-size: 1.5rem;
+        }
+
         .trophy {
             font-size: 1.5rem;
             animation: pulse 2s ease-in-out infinite;
@@ -307,6 +311,22 @@
                         <div class="stat-label">Moving Time</div>
                         <div class="stat-value" id="matt-time">--</div>
                     </div>
+                    <div class="stat">
+                        <div class="stat-label">Avg Miles/Day</div>
+                        <div class="stat-value stat-value-small" id="matt-avg-distance">--</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Avg Time/Day</div>
+                        <div class="stat-value stat-value-small" id="matt-avg-time">--</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Est. Month Total (Miles)</div>
+                        <div class="stat-value stat-value-small" id="matt-est-distance">--</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Est. Month Total (Time)</div>
+                        <div class="stat-value stat-value-small" id="matt-est-time">--</div>
+                    </div>
                 </div>
                 <a href="https://www.strava.com/athletes/2844018" target="_blank" rel="noopener" class="strava-link">
                     <svg viewBox="0 0 24 24" fill="currentColor">
@@ -326,6 +346,22 @@
                     <div class="stat">
                         <div class="stat-label">Moving Time</div>
                         <div class="stat-value" id="scott-time">--</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Avg Miles/Day</div>
+                        <div class="stat-value stat-value-small" id="scott-avg-distance">--</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Avg Time/Day</div>
+                        <div class="stat-value stat-value-small" id="scott-avg-time">--</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Est. Month Total (Miles)</div>
+                        <div class="stat-value stat-value-small" id="scott-est-distance">--</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Est. Month Total (Time)</div>
+                        <div class="stat-value stat-value-small" id="scott-est-time">--</div>
                     </div>
                 </div>
                 <a href="https://www.strava.com/athletes/736553" target="_blank" rel="noopener" class="strava-link">
@@ -375,6 +411,35 @@
             });
         }
 
+        // Format seconds as HH:MM:SS
+        function formatTime(totalSeconds) {
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = Math.floor(totalSeconds % 60);
+            return `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        // Get current day of the month from the lastUpdated timestamp
+        function getDayOfMonth(isoString) {
+            const date = new Date(isoString);
+            return date.getUTCDate();
+        }
+
+        // Calculate derived stats
+        function calculateStats(distance, timeSeconds, dayOfMonth) {
+            const avgDistPerDay = distance / dayOfMonth;
+            const avgTimePerDay = timeSeconds / dayOfMonth;
+            const estTotalDist = avgDistPerDay * 31; // January has 31 days
+            const estTotalTime = avgTimePerDay * 31;
+
+            return {
+                avgDistPerDay: avgDistPerDay.toFixed(1) + ' mi',
+                avgTimePerDay: formatTime(avgTimePerDay),
+                estTotalDist: estTotalDist.toFixed(1) + ' mi',
+                estTotalTime: formatTime(estTotalTime)
+            };
+        }
+
         // Load and display data
         async function loadData() {
             try {
@@ -390,12 +455,27 @@
                 document.getElementById('scott-distance').textContent = scott.distance;
                 document.getElementById('scott-time').textContent = scott.movingTime;
 
-                // Determine winners
+                // Calculate and display derived stats
+                const dayOfMonth = getDayOfMonth(data.lastUpdated);
                 const mattDist = parseDistance(matt.distance);
                 const scottDist = parseDistance(scott.distance);
                 const mattTime = parseTime(matt.movingTime);
                 const scottTime = parseTime(scott.movingTime);
 
+                const mattStats = calculateStats(mattDist, mattTime, dayOfMonth);
+                const scottStats = calculateStats(scottDist, scottTime, dayOfMonth);
+
+                document.getElementById('matt-avg-distance').textContent = mattStats.avgDistPerDay;
+                document.getElementById('matt-avg-time').textContent = mattStats.avgTimePerDay;
+                document.getElementById('matt-est-distance').textContent = mattStats.estTotalDist;
+                document.getElementById('matt-est-time').textContent = mattStats.estTotalTime;
+
+                document.getElementById('scott-avg-distance').textContent = scottStats.avgDistPerDay;
+                document.getElementById('scott-avg-time').textContent = scottStats.avgTimePerDay;
+                document.getElementById('scott-est-distance').textContent = scottStats.estTotalDist;
+                document.getElementById('scott-est-time').textContent = scottStats.estTotalTime;
+
+                // Determine winners
                 // Distance winner
                 const distanceLeaderEl = document.getElementById('distance-leader');
                 const mattDistEl = document.getElementById('matt-distance');

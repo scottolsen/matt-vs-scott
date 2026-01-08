@@ -109,10 +109,25 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
+        .competitor-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-pic {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--strava-orange);
+            flex-shrink: 0;
+        }
+
         .competitor-name {
             font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -301,7 +316,10 @@
 
         <div class="competition">
             <div class="competitor" id="matt-card">
-                <h2 class="competitor-name">Matt Phippen</h2>
+                <div class="competitor-header">
+                    <img id="matt-pic" class="profile-pic" src="" alt="Matt Phippen" style="display: none;">
+                    <h2 class="competitor-name">Matt Phippen</h2>
+                </div>
                 <div class="stats">
                     <div class="stat">
                         <div class="stat-label">Distance</div>
@@ -337,7 +355,10 @@
             </div>
 
             <div class="competitor" id="scott-card">
-                <h2 class="competitor-name">Scott Olsen</h2>
+                <div class="competitor-header">
+                    <img id="scott-pic" class="profile-pic" src="" alt="Scott Olsen" style="display: none;">
+                    <h2 class="competitor-name">Scott Olsen</h2>
+                </div>
                 <div class="stats">
                     <div class="stat">
                         <div class="stat-label">Distance</div>
@@ -518,6 +539,18 @@
 
                 // Update timestamp
                 document.getElementById('last-updated').textContent = formatDate(data.lastUpdated);
+
+                // Load profile pictures if available
+                if (matt.profilePic) {
+                    const mattPicEl = document.getElementById('matt-pic');
+                    mattPicEl.src = matt.profilePic;
+                    mattPicEl.style.display = 'block';
+                }
+                if (scott.profilePic) {
+                    const scottPicEl = document.getElementById('scott-pic');
+                    scottPicEl.src = scott.profilePic;
+                    scottPicEl.style.display = 'block';
+                }
 
             } catch (error) {
                 console.error('Failed to load data:', error);

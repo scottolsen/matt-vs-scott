@@ -7,7 +7,17 @@
       "Bash(open:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push)"
+      "Bash(git push)",
+      "Bash(node /Users/scottolsen/code/matt-vs-scott/scripts/scrape.js:*)",
+      "Bash(git -C /Users/scottolsen/code/matt-vs-scott status)",
+      "Bash(git -C /Users/scottolsen/code/matt-vs-scott log --oneline -5)",
+      "Bash(git -C /Users/scottolsen/code/matt-vs-scott add index.html)",
+      "Bash(git -C /Users/scottolsen/code/matt-vs-scott commit -m \"$\\(cat <<''EOF''\nAdd calculated stats: avg per day and estimated month totals\n\nAdded four new stats for each competitor:\n- Avg miles/day\n- Avg time/day  \n- Estimated total miles at end of month\n- Estimated total time at end of month\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C /Users/scottolsen/code/matt-vs-scott push)",
+      "Bash(npm run scrape:*)",
+      "Bash(curl:*)",
+      "Bash(git pull:*)",
+      "Bash(git rebase:*)"
     ]
   }
 }

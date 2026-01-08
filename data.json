@@ -5,13 +5,15 @@
       "name": "Matt Phippen",
       "stravaId": "2844018",
       "distance": "268.9 mi",
-      "movingTime": "17:14:37"
+      "movingTime": "17:14:37",
+      "profilePic": "images/matt.jpg"
     },
     "scott": {
       "name": "Scott Olsen",
       "stravaId": "736553",
       "distance": "277.2 mi",
-      "movingTime": "14:22:10"
+      "movingTime": "14:22:10",
+      "profilePic": "images/scott.jpg"
     }
   }
 }

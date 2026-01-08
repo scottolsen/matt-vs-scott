@@ -1,6 +1,9 @@
 const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
+
+const IMAGES_DIR = path.join(__dirname, '..', 'images');
 
 const ATHLETES = {
   matt: {
@@ -16,6 +19,33 @@ const ATHLETES = {
 };
 
 const DATA_FILE = path.join(__dirname, '..', 'data.json');
+
+// Ensure images directory exists
+if (!fs.existsSync(IMAGES_DIR)) {
+  fs.mkdirSync(IMAGES_DIR, { recursive: true });
+}
+
+// Download image from URL
+function downloadImage(url, filepath) {
+  return new Promise((resolve, reject) => {
+    const file = fs.createWriteStream(filepath);
+    https.get(url, (response) => {
+      if (response.statusCode === 301 || response.statusCode === 302) {
+        // Handle redirect
+        downloadImage(response.headers.location, filepath).then(resolve).catch(reject);
+        return;
+      }
+      response.pipe(file);
+      file.on('finish', () => {
+        file.close();
+        resolve(true);
+      });
+    }).on('error', (err) => {
+      fs.unlink(filepath, () => {}); // Delete the file on error
+      reject(err);
+    });
+  });
+}
 
 async function scrapeAthleteStats(page, url) {
   console.log(`Scraping: ${url}`);
@@ -159,7 +189,32 @@ async function scrapeAthleteStats(page, url) {
     }
   }
 
-  return { distance, movingTime };
+  // Extract profile picture URL
+  let profilePic = null;
+  try {
+    profilePic = await page.evaluate(() => {
+      // Look for the athlete's avatar image
+      const avatarImg = document.querySelector('.avatar-img img, img.avatar, [class*="Avatar"] img, .athlete-avatar img');
+      if (avatarImg && avatarImg.src) {
+        return avatarImg.src;
+      }
+      // Try finding by src pattern (Strava uses cloudfront for images)
+      const images = document.querySelectorAll('img[src*="cloudfront"], img[src*="strava"]');
+      for (const img of images) {
+        if (img.src.includes('athletes') || img.src.includes('avatar') || img.src.includes('pictures')) {
+          // Skip small icons and logos
+          if (img.width > 50 || img.naturalWidth > 50) {
+            return img.src;
+          }
+        }
+      }
+      return null;
+    });
+  } catch (error) {
+    console.error('Error extracting profile pic:', error.message);
+  }
+
+  return { distance, movingTime, profilePic };
 }
 
 async function main() {
@@ -209,6 +264,18 @@ async function main() {
           data.contestants[key].distance = stats.distance;
           data.contestants[key].movingTime = stats.movingTime;
           hasUpdates = true;
+        }
+
+        // Download profile picture if found
+        if (stats.profilePic) {
+          const imgPath = path.join(IMAGES_DIR, `${key}.jpg`);
+          try {
+            await downloadImage(stats.profilePic, imgPath);
+            data.contestants[key].profilePic = `images/${key}.jpg`;
+            console.log(`Downloaded profile pic for ${athlete.name}`);
+          } catch (err) {
+            console.log(`Could not download profile pic for ${athlete.name}: ${err.message}`);
+          }
         }
       } else {
         console.log(`Warning: Could not extract stats for ${athlete.name}`);

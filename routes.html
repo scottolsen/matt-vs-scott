@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour de Zwift 2026 - Cycling Routes</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --strava-orange: #FC4C02;
+            --strava-orange-dark: #e04400;
+            --dark-bg: #0d0d0d;
+            --card-bg: #1a1a1a;
+            --card-border: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --zwift-orange: #f26722;
+            --long-ride: #22c55e;
+            --standard-ride: #3b82f6;
+            --short-ride: #a855f7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 6vw, 3rem);
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--zwift-orange), #ff9500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .subtitle span {
+            color: var(--zwift-orange);
+            font-weight: 600;
+        }
+
+        /* Back link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: var(--strava-orange);
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.long { background: var(--long-ride); }
+        .legend-dot.standard { background: var(--standard-ride); }
+        .legend-dot.short { background: var(--short-ride); }
+
+        /* Stage Section */
+        .stage-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .stage-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--card-border);
+        }
+
+        .stage-number {
+            background: var(--zwift-orange);
+            color: white;
+            font-weight: 700;
+            font-size: 0.875rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+        }
+
+        .stage-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .stage-dates {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-left: auto;
+        }
+
+        /* Routes Grid */
+        .routes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1rem;
+        }
+
+        @media (max-width: 400px) {
+            .routes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Route Card */
+        .route-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            position: relative;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .route-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .route-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 0.75rem 0.75rem 0 0;
+        }
+
+        .route-card.long::before { background: var(--long-ride); }
+        .route-card.standard::before { background: var(--standard-ride); }
+        .route-card.short::before { background: var(--short-ride); }
+
+        .route-type {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .route-card.long .route-type { color: var(--long-ride); }
+        .route-card.standard .route-type { color: var(--standard-ride); }
+        .route-card.short .route-type { color: var(--short-ride); }
+
+        .route-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .route-world {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .route-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .stat-value.time {
+            color: var(--zwift-orange);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--card-border);
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .footer-text a {
+            color: var(--zwift-orange);
+            text-decoration: none;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Totals Summary */
+        .totals-summary {
+            background: linear-gradient(135deg, var(--card-bg) 0%, #252525 100%);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .total-item {
+            text-align: center;
+        }
+
+        .total-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .total-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--zwift-orange);
+        }
+
+        /* Table Section */
+        .table-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--card-border);
+        }
+
+        .table-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.25rem;
+        }
+
+        .table-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 0.75rem;
+            border: 1px solid var(--card-border);
+        }
+
+        #routes-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        #routes-table th,
+        #routes-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        #routes-table th {
+            background: var(--card-bg);
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.2s ease;
+            border-bottom: 2px solid var(--card-border);
+        }
+
+        #routes-table th:hover {
+            color: var(--zwift-orange);
+        }
+
+        .sort-icon {
+            opacity: 0.4;
+            margin-left: 0.25rem;
+            font-size: 0.8rem;
+        }
+
+        #routes-table th.sorted-asc .sort-icon,
+        #routes-table th.sorted-desc .sort-icon {
+            opacity: 1;
+            color: var(--zwift-orange);
+        }
+
+        #routes-table th.sorted-asc .sort-icon::after {
+            content: '↑';
+        }
+
+        #routes-table th.sorted-desc .sort-icon::after {
+            content: '↓';
+        }
+
+        #routes-table th.sorted-asc .sort-icon,
+        #routes-table th.sorted-desc .sort-icon {
+            font-size: 0;
+        }
+
+        #routes-table th.sorted-asc .sort-icon::after,
+        #routes-table th.sorted-desc .sort-icon::after {
+            font-size: 0.8rem;
+        }
+
+        #routes-table tbody tr {
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--card-border);
+            transition: background 0.2s ease;
+        }
+
+        #routes-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        #routes-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .type-badge.long {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--long-ride);
+        }
+
+        .type-badge.standard {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--standard-ride);
+        }
+
+        .type-badge.short {
+            background: rgba(168, 85, 247, 0.15);
+            color: var(--short-ride);
+        }
+
+        @media (max-width: 768px) {
+            #routes-table th,
+            #routes-table td {
+                padding: 0.5rem 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to Challenge
+        </a>
+
+        <header>
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="var(--zwift-orange)">
+                    <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/>
+                </svg>
+            </div>
+            <h1>Tour de Zwift 2026</h1>
+            <p class="subtitle">Cycling Routes <span>January 5 - February 22</span></p>
+        </header>
+
+        <div class="totals-summary">
+            <div class="total-item">
+                <div class="total-label">Total Routes</div>
+                <div class="total-value">18</div>
+            </div>
+            <div class="total-item">
+                <div class="total-label">Total Distance</div>
+                <div class="total-value">581 km</div>
+            </div>
+            <div class="total-item">
+                <div class="total-label">Total Climbing</div>
+                <div class="total-value">6,591 m</div>
+            </div>
+            <div class="total-item">
+                <div class="total-label">Total Time @ 2w/kg</div>
+                <div class="total-value">~21.5 hrs</div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <span class="legend-dot long"></span>
+                Long Ride
+            </div>
+            <div class="legend-item">
+                <span class="legend-dot standard"></span>
+                Standard Ride
+            </div>
+            <div class="legend-item">
+                <span class="legend-dot short"></span>
+                Short Ride + Race
+            </div>
+        </div>
+
+        <!-- Stage 1 -->
+        <section class="stage-section">
+            <div class="stage-header">
+                <span class="stage-number">Stage 1</span>
+                <h2 class="stage-title">Makuri Islands</h2>
+                <span class="stage-dates">Jan 5-11</span>
+            </div>
+            <div class="routes-grid">
+                <div class="route-card long">
+                    <div class="route-type">Long Ride</div>
+                    <div class="route-name">Shisa Shakedown</div>
+                    <div class="route-world">Makuri Islands</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">53.3 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">557 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">112 min</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="route-card standard">
+                    <div class="route-type">Standard Ride</div>
+                    <div class="route-name">Chasing the Sun</div>
+                    <div class="route-world">Makuri Islands</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">35.1 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">316 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">70 min</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="route-card short">
+                    <div class="route-type">Short Ride + Race</div>
+                    <div class="route-name">Turf N Surf</div>
+                    <div class="route-world">Makuri Islands</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">24.7 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">198 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">48 min</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stage 2 -->
+        <section class="stage-section">
+            <div class="stage-header">
+                <span class="stage-number">Stage 2</span>
+                <h2 class="stage-title">France</h2>
+                <span class="stage-dates">Jan 12-18</span>
+            </div>
+            <div class="routes-grid">
+                <div class="route-card long">
+                    <div class="route-type">Long Ride</div>
+                    <div class="route-name">Knights of the Roundabout</div>
+                    <div class="route-world">France</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">54.4 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">359 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">103 min</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="route-card standard">
+                    <div class="route-type">Standard Ride</div>
+                    <div class="route-name">Three Musketeers</div>
+                    <div class="route-world">France</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">37.8 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">108 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">70 min</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="route-card short">
+                    <div class="route-type">Short Ride + Race</div>
+                    <div class="route-name">Hell of the North</div>
+                    <div class="route-world">France</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">20.1 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">241 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">46 min</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stage 3 -->
+        <section class="stage-section">
+            <div class="stage-header">
+                <span class="stage-number">Stage 3</span>
+                <h2 class="stage-title">Innsbruck / Yorkshire / Scotland</h2>
+                <span class="stage-dates">Jan 19-25</span>
+            </div>
+            <div class="routes-grid">
+                <div class="route-card long">
+                    <div class="route-type">Long Ride</div>
+                    <div class="route-name">Innsbruck KOM After Party</div>
+                    <div class="route-world">Innsbruck</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">37.1 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">657 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">100 min</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="route-card standard">
+                    <div class="route-type">Standard Ride</div>
+                    <div class="route-name">Yorkshire Double Loops</div>
+                    <div class="route-world">Yorkshire</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">29.6 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">547 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">73 min</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="route-card short">
+                    <div class="route-type">Short Ride + Race</div>
+                    <div class="route-name">BRAEk-fast Crits and Grits</div>
+                    <div class="route-world">Scotland</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">22.1 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">243 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">47 min</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stage 4 -->
+        <section class="stage-section">
+            <div class="stage-header">
+                <span class="stage-number">Stage 4</span>
+                <h2 class="stage-title">London</h2>
+                <span class="stage-dates">Jan 26 - Feb 1</span>
+            </div>
+            <div class="routes-grid">
+                <div class="route-card long">
+                    <div class="route-type">Long Ride</div>
+                    <div class="route-name">Triple Loops</div>
+                    <div class="route-world">London</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">41.4 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">569 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">92 min</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="route-card standard">
+                    <div class="route-type">Standard Ride</div>
+                    <div class="route-name">Greatest London Flat</div>
+                    <div class="route-world">London</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">31.1 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">223 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">61 min</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="route-card short">
+                    <div class="route-type">Short Ride + Race</div>
+                    <div class="route-name">London 8</div>
+                    <div class="route-world">London</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">20.9 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">223 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">44 min</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stage 5 -->
+        <section class="stage-section">
+            <div class="stage-header">
+                <span class="stage-number">Stage 5</span>
+                <h2 class="stage-title">Watopia</h2>
+                <span class="stage-dates">Feb 2-8</span>
+            </div>
+            <div class="routes-grid">
+                <div class="route-card long">
+                    <div class="route-type">Long Ride</div>
+                    <div class="route-name">Tour of Fire and Ice</div>
+                    <div class="route-world">Watopia</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">28.0 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">1,187 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">126 min</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="route-card standard">
+                    <div class="route-type">Standard Ride</div>
+                    <div class="route-name">Glyph Heights</div>
+                    <div class="route-world">Watopia</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">33.9 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">618 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">85 min</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="route-card short">
+                    <div class="route-type">Short Ride + Race</div>
+                    <div class="route-name">Ocean Lava Cliffside Loop</div>
+                    <div class="route-world">Watopia</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">19.3 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">157 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">38 min</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stage 6 -->
+        <section class="stage-section">
+            <div class="stage-header">
+                <span class="stage-number">Stage 6</span>
+                <h2 class="stage-title">NYC / Richmond</h2>
+                <span class="stage-dates">Feb 9-15</span>
+            </div>
+            <div class="routes-grid">
+                <div class="route-card long">
+                    <div class="route-type">Long Ride</div>
+                    <div class="route-name">The Greenway</div>
+                    <div class="route-world">New York</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">36.8 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">292 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">72 min</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="route-card standard">
+                    <div class="route-type">Standard Ride</div>
+                    <div class="route-name">No Sleep Till Brooklyn</div>
+                    <div class="route-world">New York</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">32.0 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">247 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">62 min</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="route-card short">
+                    <div class="route-type">Short Ride + Race</div>
+                    <div class="route-name">Richmond Rollercoaster</div>
+                    <div class="route-world">Richmond</div>
+                    <div class="route-stats">
+                        <div class="stat-box">
+                            <div class="stat-label">Distance</div>
+                            <div class="stat-value">17.0 km</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Climbing</div>
+                            <div class="stat-value">169 m</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">@ 2w/kg</div>
+                            <div class="stat-value time">39 min</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sortable Table -->
+        <section class="table-section">
+            <h2 class="table-title">All Routes</h2>
+            <p class="table-subtitle">Click column headers to sort</p>
+            <div class="table-wrapper">
+                <table id="routes-table">
+                    <thead>
+                        <tr>
+                            <th data-sort="stage">Stage <span class="sort-icon">⇅</span></th>
+                            <th data-sort="name">Route Name <span class="sort-icon">⇅</span></th>
+                            <th data-sort="type">Type <span class="sort-icon">⇅</span></th>
+                            <th data-sort="world">World <span class="sort-icon">⇅</span></th>
+                            <th data-sort="distance">Distance <span class="sort-icon">⇅</span></th>
+                            <th data-sort="climbing">Climbing <span class="sort-icon">⇅</span></th>
+                            <th data-sort="time">Time @ 2w/kg <span class="sort-icon">⇅</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-stage="1" data-name="Shisa Shakedown" data-type="Long" data-world="Makuri Islands" data-distance="53.3" data-climbing="557" data-time="112">
+                            <td>1</td>
+                            <td>Shisa Shakedown</td>
+                            <td><span class="type-badge long">Long</span></td>
+                            <td>Makuri Islands</td>
+                            <td>53.3 km</td>
+                            <td>557 m</td>
+                            <td>112 min</td>
+                        </tr>
+                        <tr data-stage="1" data-name="Chasing the Sun" data-type="Standard" data-world="Makuri Islands" data-distance="35.1" data-climbing="316" data-time="70">
+                            <td>1</td>
+                            <td>Chasing the Sun</td>
+                            <td><span class="type-badge standard">Standard</span></td>
+                            <td>Makuri Islands</td>
+                            <td>35.1 km</td>
+                            <td>316 m</td>
+                            <td>70 min</td>
+                        </tr>
+                        <tr data-stage="1" data-name="Turf N Surf" data-type="Short" data-world="Makuri Islands" data-distance="24.7" data-climbing="198" data-time="48">
+                            <td>1</td>
+                            <td>Turf N Surf</td>
+                            <td><span class="type-badge short">Short</span></td>
+                            <td>Makuri Islands</td>
+                            <td>24.7 km</td>
+                            <td>198 m</td>
+                            <td>48 min</td>
+                        </tr>
+                        <tr data-stage="2" data-name="Knights of the Roundabout" data-type="Long" data-world="France" data-distance="54.4" data-climbing="359" data-time="103">
+                            <td>2</td>
+                            <td>Knights of the Roundabout</td>
+                            <td><span class="type-badge long">Long</span></td>
+                            <td>France</td>
+                            <td>54.4 km</td>
+                            <td>359 m</td>
+                            <td>103 min</td>
+                        </tr>
+                        <tr data-stage="2" data-name="Three Musketeers" data-type="Standard" data-world="France" data-distance="37.8" data-climbing="108" data-time="70">
+                            <td>2</td>
+                            <td>Three Musketeers</td>
+                            <td><span class="type-badge standard">Standard</span></td>
+                            <td>France</td>
+                            <td>37.8 km</td>
+                            <td>108 m</td>
+                            <td>70 min</td>
+                        </tr>
+                        <tr data-stage="2" data-name="Hell of the North" data-type="Short" data-world="France" data-distance="20.1" data-climbing="241" data-time="46">
+                            <td>2</td>
+                            <td>Hell of the North</td>
+                            <td><span class="type-badge short">Short</span></td>
+                            <td>France</td>
+                            <td>20.1 km</td>
+                            <td>241 m</td>
+                            <td>46 min</td>
+                        </tr>
+                        <tr data-stage="3" data-name="Innsbruck KOM After Party" data-type="Long" data-world="Innsbruck" data-distance="37.1" data-climbing="657" data-time="100">
+                            <td>3</td>
+                            <td>Innsbruck KOM After Party</td>
+                            <td><span class="type-badge long">Long</span></td>
+                            <td>Innsbruck</td>
+                            <td>37.1 km</td>
+                            <td>657 m</td>
+                            <td>100 min</td>
+                        </tr>
+                        <tr data-stage="3" data-name="Yorkshire Double Loops" data-type="Standard" data-world="Yorkshire" data-distance="29.6" data-climbing="547" data-time="73">
+                            <td>3</td>
+                            <td>Yorkshire Double Loops</td>
+                            <td><span class="type-badge standard">Standard</span></td>
+                            <td>Yorkshire</td>
+                            <td>29.6 km</td>
+                            <td>547 m</td>
+                            <td>73 min</td>
+                        </tr>
+                        <tr data-stage="3" data-name="BRAEk-fast Crits and Grits" data-type="Short" data-world="Scotland" data-distance="22.1" data-climbing="243" data-time="47">
+                            <td>3</td>
+                            <td>BRAEk-fast Crits and Grits</td>
+                            <td><span class="type-badge short">Short</span></td>
+                            <td>Scotland</td>
+                            <td>22.1 km</td>
+                            <td>243 m</td>
+                            <td>47 min</td>
+                        </tr>
+                        <tr data-stage="4" data-name="Triple Loops" data-type="Long" data-world="London" data-distance="41.4" data-climbing="569" data-time="92">
+                            <td>4</td>
+                            <td>Triple Loops</td>
+                            <td><span class="type-badge long">Long</span></td>
+                            <td>London</td>
+                            <td>41.4 km</td>
+                            <td>569 m</td>
+                            <td>92 min</td>
+                        </tr>
+                        <tr data-stage="4" data-name="Greatest London Flat" data-type="Standard" data-world="London" data-distance="31.1" data-climbing="223" data-time="61">
+                            <td>4</td>
+                            <td>Greatest London Flat</td>
+                            <td><span class="type-badge standard">Standard</span></td>
+                            <td>London</td>
+                            <td>31.1 km</td>
+                            <td>223 m</td>
+                            <td>61 min</td>
+                        </tr>
+                        <tr data-stage="4" data-name="London 8" data-type="Short" data-world="London" data-distance="20.9" data-climbing="223" data-time="44">
+                            <td>4</td>
+                            <td>London 8</td>
+                            <td><span class="type-badge short">Short</span></td>
+                            <td>London</td>
+                            <td>20.9 km</td>
+                            <td>223 m</td>
+                            <td>44 min</td>
+                        </tr>
+                        <tr data-stage="5" data-name="Tour of Fire and Ice" data-type="Long" data-world="Watopia" data-distance="28.0" data-climbing="1187" data-time="126">
+                            <td>5</td>
+                            <td>Tour of Fire and Ice</td>
+                            <td><span class="type-badge long">Long</span></td>
+                            <td>Watopia</td>
+                            <td>28.0 km</td>
+                            <td>1,187 m</td>
+                            <td>126 min</td>
+                        </tr>
+                        <tr data-stage="5" data-name="Glyph Heights" data-type="Standard" data-world="Watopia" data-distance="33.9" data-climbing="618" data-time="85">
+                            <td>5</td>
+                            <td>Glyph Heights</td>
+                            <td><span class="type-badge standard">Standard</span></td>
+                            <td>Watopia</td>
+                            <td>33.9 km</td>
+                            <td>618 m</td>
+                            <td>85 min</td>
+                        </tr>
+                        <tr data-stage="5" data-name="Ocean Lava Cliffside Loop" data-type="Short" data-world="Watopia" data-distance="19.3" data-climbing="157" data-time="38">
+                            <td>5</td>
+                            <td>Ocean Lava Cliffside Loop</td>
+                            <td><span class="type-badge short">Short</span></td>
+                            <td>Watopia</td>
+                            <td>19.3 km</td>
+                            <td>157 m</td>
+                            <td>38 min</td>
+                        </tr>
+                        <tr data-stage="6" data-name="The Greenway" data-type="Long" data-world="New York" data-distance="36.8" data-climbing="292" data-time="72">
+                            <td>6</td>
+                            <td>The Greenway</td>
+                            <td><span class="type-badge long">Long</span></td>
+                            <td>New York</td>
+                            <td>36.8 km</td>
+                            <td>292 m</td>
+                            <td>72 min</td>
+                        </tr>
+                        <tr data-stage="6" data-name="No Sleep Till Brooklyn" data-type="Standard" data-world="New York" data-distance="32.0" data-climbing="247" data-time="62">
+                            <td>6</td>
+                            <td>No Sleep Till Brooklyn</td>
+                            <td><span class="type-badge standard">Standard</span></td>
+                            <td>New York</td>
+                            <td>32.0 km</td>
+                            <td>247 m</td>
+                            <td>62 min</td>
+                        </tr>
+                        <tr data-stage="6" data-name="Richmond Rollercoaster" data-type="Short" data-world="Richmond" data-distance="17.0" data-climbing="169" data-time="39">
+                            <td>6</td>
+                            <td>Richmond Rollercoaster</td>
+                            <td><span class="type-badge short">Short</span></td>
+                            <td>Richmond</td>
+                            <td>17.0 km</td>
+                            <td>169 m</td>
+                            <td>39 min</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer>
+            <p class="footer-text">
+                Route data from <a href="https://zwiftinsider.com/tour-de-zwift-2026/" target="_blank" rel="noopener">ZwiftInsider</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Sortable table functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const table = document.getElementById('routes-table');
+            const headers = table.querySelectorAll('th[data-sort]');
+            let currentSort = { column: null, direction: 'asc' };
+
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const column = header.dataset.sort;
+                    const direction = currentSort.column === column && currentSort.direction === 'asc' ? 'desc' : 'asc';
+
+                    sortTable(column, direction);
+                    currentSort = { column, direction };
+
+                    // Update header styles
+                    headers.forEach(h => {
+                        h.classList.remove('sorted-asc', 'sorted-desc');
+                    });
+                    header.classList.add(direction === 'asc' ? 'sorted-asc' : 'sorted-desc');
+                });
+            });
+
+            function sortTable(column, direction) {
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+
+                rows.sort((a, b) => {
+                    let aVal = a.dataset[column];
+                    let bVal = b.dataset[column];
+
+                    // Handle numeric columns
+                    if (['stage', 'distance', 'climbing', 'time'].includes(column)) {
+                        aVal = parseFloat(aVal);
+                        bVal = parseFloat(bVal);
+                    } else {
+                        aVal = aVal.toLowerCase();
+                        bVal = bVal.toLowerCase();
+                    }
+
+                    if (aVal < bVal) return direction === 'asc' ? -1 : 1;
+                    if (aVal > bVal) return direction === 'asc' ? 1 : -1;
+                    return 0;
+                });
+
+                // Re-append rows in sorted order
+                rows.forEach(row => tbody.appendChild(row));
+            }
+        });
+    </script>
+</body>
+</html>

@@ -348,6 +348,10 @@
                         <div class="stat-value stat-value-small" id="matt-avg-time">--</div>
                     </div>
                     <div class="stat">
+                        <div class="stat-label">Avg MPH</div>
+                        <div class="stat-value stat-value-small" id="matt-avg-mph">--</div>
+                    </div>
+                    <div class="stat">
                         <div class="stat-label">Est. Month Total (Miles)</div>
                         <div class="stat-value stat-value-small" id="matt-est-distance">--</div>
                     </div>
@@ -385,6 +389,10 @@
                     <div class="stat">
                         <div class="stat-label">Avg Time/Day</div>
                         <div class="stat-value stat-value-small" id="scott-avg-time">--</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Avg MPH</div>
+                        <div class="stat-value stat-value-small" id="scott-avg-mph">--</div>
                     </div>
                     <div class="stat">
                         <div class="stat-label">Est. Month Total (Miles)</div>
@@ -462,10 +470,12 @@
             const avgTimePerDay = timeSeconds / dayOfMonth;
             const estTotalDist = avgDistPerDay * 31; // January has 31 days
             const estTotalTime = avgTimePerDay * 31;
+            const avgMph = timeSeconds > 0 ? distance / (timeSeconds / 3600) : 0;
 
             return {
                 avgDistPerDay: avgDistPerDay.toFixed(1) + ' mi',
                 avgTimePerDay: formatTime(avgTimePerDay),
+                avgMph: avgMph.toFixed(1) + ' mph',
                 estTotalDist: estTotalDist.toFixed(1) + ' mi',
                 estTotalTime: formatTime(estTotalTime)
             };
@@ -498,11 +508,13 @@
 
                 document.getElementById('matt-avg-distance').textContent = mattStats.avgDistPerDay;
                 document.getElementById('matt-avg-time').textContent = mattStats.avgTimePerDay;
+                document.getElementById('matt-avg-mph').textContent = mattStats.avgMph;
                 document.getElementById('matt-est-distance').textContent = mattStats.estTotalDist;
                 document.getElementById('matt-est-time').textContent = mattStats.estTotalTime;
 
                 document.getElementById('scott-avg-distance').textContent = scottStats.avgDistPerDay;
                 document.getElementById('scott-avg-time').textContent = scottStats.avgTimePerDay;
+                document.getElementById('scott-avg-mph').textContent = scottStats.avgMph;
                 document.getElementById('scott-est-distance').textContent = scottStats.estTotalDist;
                 document.getElementById('scott-est-time').textContent = scottStats.estTotalTime;
 

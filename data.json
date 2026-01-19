@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-19T12:54:40.973Z",
+  "lastUpdated": "2026-01-19T13:48:05.703Z",
   "contestants": {
     "matt": {
       "name": "Matt Phippen",
@@ -11,8 +11,8 @@
     "scott": {
       "name": "Scott Olsen",
       "stravaId": "736553",
-      "distance": "864.7 mi",
-      "movingTime": "42:33:06",
+      "distance": "920.0 mi",
+      "movingTime": "45:03:29",
       "profilePic": "images/scott.jpg"
     }
   }

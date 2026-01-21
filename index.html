@@ -422,7 +422,9 @@
     <script>
         // Parse distance string to number (e.g., "218.1 mi" -> 218.1)
         function parseDistance(str) {
-            const match = str.match(/[\d.]+/);
+            // Remove commas from number before parsing (e.g., "1,003.0 mi" -> "1003.0 mi")
+            const cleaned = str.replace(/,/g, '');
+            const match = cleaned.match(/[\d.]+/);
             return match ? parseFloat(match[0]) : 0;
         }
 

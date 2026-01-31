@@ -1,12 +1,6 @@
 name: Update Strava Stats
 
 on:
-  schedule:
-    # Run hourly between 4am and 10pm Central Time (UTC-6)
-    - cron: '0 10-23 * * *'
-    - cron: '0 0-4 * * *'
-
-  # Allow manual trigger
   workflow_dispatch:
 
 jobs:
